@@ -168,4 +168,4 @@ def view_log():
     return render_template('view_log.html', bathroom_log=bathroom_log)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
