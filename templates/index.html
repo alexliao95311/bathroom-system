@@ -3,20 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Student Bathroom Log</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Welcome to the Student Bathroom Log</h1>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class="flashes">
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    <div class="flash-container">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
     <form method="POST">
-        <input type="text" name="student_id" placeholder="Enter student ID or 'admin'" required>
+        <input type="text" name="student_id" placeholder="Enter student ID" required>
         <button type="submit">Submit</button>
     </form>
 </body>

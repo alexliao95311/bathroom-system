@@ -1,0 +1,99 @@
+/* static/style.css */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    text-align: center; /* Aligns text to the center */
+}
+
+h1 {
+    color: #333;
+}
+
+form {
+    margin-top: 20px;
+    display: inline-block; /* Makes the form center-align with text-align property */
+}
+
+input[type="text"], button {
+    padding: 10px;
+    margin-top: 10px;
+    display: block; /* Makes input and button take the full width of their container */
+    margin-left: auto; /* With margin-right: auto, centers the block elements */
+    margin-right: auto;
+    width: 80%; /* You can adjust the width as needed */
+}
+
+button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #3498db; /* Button color - you can change this */
+    color: #ffffff; /* Text color */
+    text-decoration: none; /* Remove underline from links */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Optional: rounds the corners */
+    cursor: pointer; /* Changes cursor to indicate it's clickable */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for depth */
+    transition: background-color 0.3s; /* Smooth background color change on hover */
+}
+
+button:hover {
+    background-color: #297db7;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #3498db; /* Button color - you can change this */
+    color: #ffffff; /* Text color */
+    text-decoration: none; /* Remove underline from links */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Optional: rounds the corners */
+    cursor: pointer; /* Changes cursor to indicate it's clickable */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for depth */
+    transition: background-color 0.3s; /* Smooth background color change on hover */
+}
+
+.button:hover {
+    background-color: #297db7; /* Darker shade for button hover state */
+}
+
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left; /* Aligns list items to the left */
+    display: inline-block; /* Aligns the list in the center due to body's text-align */
+    margin: 0; /* Removes default margin */
+}
+
+ul.flashes {
+    width: 100%; /* Makes the flash messages list take full width */
+    box-sizing: border-box; /* Ensures padding doesn't affect overall width */
+}
+
+ul.flashes li {
+    background-color: #ffcccc;
+    border: 1px solid #ffaaaa;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.flash-container {
+    width: 100%; /* Use 100% width to span the container */
+    text-align: center; /* Center the text */
+}
+
+.flash-message {
+    display: inline-block; /* Allows for centering with text-align */
+    margin: 10px auto; /* Vertical spacing and centering horizontally */
+    padding: 10px;
+    border: 1px solid #ffaaaa; /* Red border for visibility */
+    background-color: #ffcccc; /* Light red background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds subtle shadow for depth */
+    width: 80%; /* Adjust width as needed */
+    box-sizing: border-box; /* Include padding and border in the element's width */
+}

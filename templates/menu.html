@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Student Menu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>Welcome, {{ student_name }}</h1>
     <!-- Flash message block -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    <div class="flash-container">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+    </div>
     <!-- End of flash message block -->
     <form method="POST">
         <button type="submit" name="go_to_bathroom">Go to Bathroom</button>
