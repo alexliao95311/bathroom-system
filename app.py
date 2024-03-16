@@ -1,5 +1,9 @@
-import os
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import datetime
+import os
+
+app = Flask(__name__)
+app.secret_key = '95311'  # Replace this with a strong secret key
 
 # Database of 10 students
 students = {
@@ -38,39 +42,41 @@ def go_to_bathroom(student_id):
     global bathroom_occupied, bathroom_occupied_since
 
     if bathroom_occupied is not None:
-        print(f"Cannot go to the bathroom. It is currently occupied by {students[bathroom_occupied]}.")
+        flash(f"Cannot go to the bathroom. It is currently occupied by {students[bathroom_occupied]}.")
         return
 
     bathroom_occupied = student_id
     bathroom_occupied_since = datetime.datetime.now()
     # Log the bathroom visit
     bathroom_log.append(f"{students[student_id]} went to the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"{students[student_id]} has left for the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S')}.")
+    flash(f"{students[student_id]} has left for the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S')}.")
+    return True
 
 def coming_back_to_class(student_id):
     global bathroom_occupied, bathroom_occupied_since
 
     if bathroom_occupied != student_id:
-        print("Error: You did not have an active bathroom pass.")
-        return
+        flash("Error: You did not have an active bathroom pass.")
+        return False
 
     coming_back_time = datetime.datetime.now()
     duration = coming_back_time - bathroom_occupied_since
     minutes, seconds = divmod(duration.seconds, 60)
     # Log the return from the bathroom
     bathroom_log.append(f"{students[student_id]} came back from the bathroom at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"{students[student_id]} is coming back to class at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S')}.")
-    print(f"Duration in the bathroom: {minutes} minutes and {seconds} seconds.")
+    flash(f"{students[student_id]} is coming back to class at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S')}.")
+    flash(f"Duration in the bathroom: {minutes} minutes and {seconds} seconds.")
     bathroom_occupied = None
     bathroom_occupied_since = None
+    return True
 
 def view_bathroom_log():
     clear_screen()
     if not bathroom_log:
-        print("No bathroom visits have been logged yet.")
+        flash("No bathroom visits have been logged yet.")
     else:
         for entry in bathroom_log:
-            print(entry)
+            flash(entry)
     input("Press Enter to continue...")  # Wait for user to acknowledge
 
 def main():
@@ -120,5 +126,46 @@ def main():
                 input("Press Enter to try again...")  # Wait for user to acknowledge
                 clear_screen()
 
-if __name__ =="__main__":
-    main()
+# Flask routes
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        student_id_input = request.form.get('student_id')
+        if student_id_input.lower() == 'admin':
+            return redirect(url_for('view_log'))
+        try:
+            student_id = int(student_id_input)
+        except ValueError:
+            flash("Invalid student ID. Please enter a numeric ID.")
+            return redirect(url_for('index'))
+        if student_id in students:
+            session['student_id'] = student_id
+            return redirect(url_for('menu'))
+        else:
+            flash("Invalid student ID.")
+            return redirect(url_for('index'))
+    return render_template('index.html')
+
+@app.route('/menu', methods=['GET', 'POST'])
+def menu():
+    student_id = session.get('student_id')
+    if student_id is None:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        if 'go_to_bathroom' in request.form:
+            go_to_bathroom(student_id)  # Flash messages are set within this function
+        elif 'coming_back' in request.form:
+            coming_back_to_class(student_id)  # Flash messages are set within this function
+        elif 'logout' in request.form:
+            session.pop('student_id', None)
+            return redirect(url_for('index'))
+    
+    return render_template('menu.html', student_name=students.get(student_id, "Unknown"))
+
+@app.route('/view_log')
+def view_log():
+    return render_template('view_log.html', bathroom_log=bathroom_log)
+
+if __name__ == '__main__':
+    app.run(debug=True)

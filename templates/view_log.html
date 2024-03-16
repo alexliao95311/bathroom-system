@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bathroom Log</title>
+</head>
+<body>
+    <h1>Bathroom Usage Log</h1>
+    <ul>
+        {% for entry in bathroom_log %}
+            <li>{{ entry }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('menu') }}">Back to Menu</a>
+</body>
+</html>

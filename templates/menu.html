@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Menu</title>
+</head>
+<body>
+    <h1>Welcome, {{ student_name }}</h1>
+    <!-- Flash message block -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <!-- End of flash message block -->
+    <form method="POST">
+        <button type="submit" name="go_to_bathroom">Go to Bathroom</button>
+        <button type="submit" name="coming_back">Coming Back to Class</button>
+        <button type="submit" name="logout">Logout</button>
+    </form>
+</body>
+</html>
