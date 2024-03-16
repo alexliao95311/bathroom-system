@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import datetime
 import os
+import pytz
 
 app = Flask(__name__)
 app.secret_key = '95311'  # Replace this with a strong secret key
@@ -26,6 +27,9 @@ bathroom_log = []
 bathroom_occupied = None
 bathroom_occupied_since = None
 
+# Define the PST timezone
+pst = pytz.timezone('America/Los_Angeles')
+
 def clear_screen():
     # Clear the screen. Use 'cls' if on Windows.
     os.system('clear')
@@ -46,10 +50,10 @@ def go_to_bathroom(student_id):
         return
 
     bathroom_occupied = student_id
-    bathroom_occupied_since = datetime.datetime.now()
+    bathroom_occupied_since = datetime.datetime.now(pytz.utc).astimezone(pst)
     # Log the bathroom visit
-    bathroom_log.append(f"{students[student_id]} went to the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S')}")
-    flash(f"{students[student_id]} has left for the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S')}.")
+    bathroom_log.append(f"{students[student_id]} went to the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+    flash(f"{students[student_id]} has left for the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S %Z')}.")
     return True
 
 def coming_back_to_class(student_id):
@@ -59,12 +63,12 @@ def coming_back_to_class(student_id):
         flash("Error: You did not have an active bathroom pass.")
         return False
 
-    coming_back_time = datetime.datetime.now()
+    coming_back_time = datetime.datetime.now(pytz.utc).astimezone(pst)
     duration = coming_back_time - bathroom_occupied_since
     minutes, seconds = divmod(duration.seconds, 60)
     # Log the return from the bathroom
-    bathroom_log.append(f"{students[student_id]} came back from the bathroom at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S')}")
-    flash(f"{students[student_id]} is coming back to class at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S')}.")
+    bathroom_log.append(f"{students[student_id]} came back from the bathroom at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+    flash(f"{students[student_id]} is coming back to class at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}.")
     flash(f"Duration in the bathroom: {minutes} minutes and {seconds} seconds.")
     bathroom_occupied = None
     bathroom_occupied_since = None
