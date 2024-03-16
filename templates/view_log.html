@@ -6,11 +6,15 @@
 </head>
 <body>
     <h1>Bathroom Usage Log</h1>
-    <ul>
-        {% for entry in bathroom_log %}
-            <li>{{ entry }}</li>
-        {% endfor %}
-    </ul>
+    {% if bathroom_log|length > 0 %}
+        <ul>
+            {% for entry in bathroom_log %}
+                <li>{{ entry }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>The log is currently empty.</p>
+    {% endif %}
     <a href="{{ url_for('menu') }}">Back to Menu</a>
 </body>
 </html>
