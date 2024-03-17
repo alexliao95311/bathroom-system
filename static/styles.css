@@ -1,14 +1,32 @@
 /* static/style.css */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f0f0;
+    /*background-color: #3f2d2d;*/
     margin: 0;
     padding: 20px;
     text-align: center; /* Aligns text to the center */
+    background-image: url('/static/background.jpeg');
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-attachment: fixed; /* Optional: set the background image to be fixed in the viewport */
+}
+
+.centered-container {
+    display: flex; /* Use Flexbox */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full height of the viewport */
+  }
+
+
+p {
+    color: #ffffff;
+
 }
 
 h1 {
-    color: #333;
+    color: #ffffff;
 }
 
 form {
@@ -19,47 +37,114 @@ form {
 input[type="text"], button {
     padding: 10px;
     margin-top: 10px;
-    display: block; /* Makes input and button take the full width of their container */
-    margin-left: auto; /* With margin-right: auto, centers the block elements */
+    display: block; 
+    margin-left: auto; 
     margin-right: auto;
-    width: 80%; /* You can adjust the width as needed */
+    width: 80%; 
+    border-radius: 10px;
 }
 
 button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px 0;
-    background-color: #3498db; /* Button color - you can change this */
-    color: #ffffff; /* Text color */
-    text-decoration: none; /* Remove underline from links */
-    border: none; /* Remove borders */
-    border-radius: 5px; /* Optional: rounds the corners */
-    cursor: pointer; /* Changes cursor to indicate it's clickable */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for depth */
-    transition: background-color 0.3s; /* Smooth background color change on hover */
-}
-
+    cursor: pointer;
+    position: relative;
+    padding: 10px 24px;
+    font-size: 18px;
+    color: rgb(98, 193, 187);
+    border: 2px solid rgb(98, 193, 187);
+    border-radius: 34px;
+    background-color: transparent;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    overflow: hidden;
+  }
+  
+button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: inherit;
+    scale: 0;
+    z-index: -1;
+    background-color: rgb(98, 193, 187);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+  }
+  
+button:hover::before {
+    scale: 3;
+  }
+  
 button:hover {
-    background-color: #297db7;
-}
+    color: #212121;
+    scale: 1.1;
+    box-shadow: 0 0px 20px rgba(98, 193, 187,0.4);
+  }
+  
+  button:active {
+    scale: 1;
+  }
+  
+   
+button:hover::before {
+    width: 105%;
+   }
+   
+button:hover {
+    color: #111;
+   }
 
-.button {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px 0;
-    background-color: #3498db; /* Button color - you can change this */
-    color: #ffffff; /* Text color */
-    text-decoration: none; /* Remove underline from links */
-    border: none; /* Remove borders */
-    border-radius: 5px; /* Optional: rounds the corners */
-    cursor: pointer; /* Changes cursor to indicate it's clickable */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds shadow for depth */
-    transition: background-color 0.3s; /* Smooth background color change on hover */
-}
-
-.button:hover {
-    background-color: #297db7; /* Darker shade for button hover state */
-}
+button {
+    cursor: pointer;
+    position: relative;
+    padding: 10px 24px;
+    font-size: 18px;
+    color: rgb(98, 193, 187);
+    border: 2px solid rgb(98, 193, 187);
+    border-radius: 34px;
+    background-color: transparent;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    overflow: hidden;
+  }
+  
+button::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 50px;
+    height: 50px;
+    border-radius: inherit;
+    scale: 0;
+    z-index: -1;
+    background-color: rgb(98, 193, 187);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+  }
+  
+button:hover::before {
+    scale: 3;
+  }
+  
+button:hover {
+    color: #212121;
+    scale: 1.1;
+    box-shadow: 0 0px 20px rgba(98, 193, 187,0.4);
+  }
+  
+  button:active {
+    scale: 1;
+  }
+  
+   
+button:hover::before {
+    width: 105%;
+   }
+   
+button:hover {
+    color: #111;
+   }
 
 
 ul {
@@ -80,11 +165,18 @@ ul.flashes li {
     border: 1px solid #ffaaaa;
     padding: 5px;
     margin-bottom: 5px;
+    border-radius: 5px;
+    width: 80%; /* Adjust width as needed */
+    text-align: center; /* Center the text */
+    margin: 10px auto; /* Vertical spacing and centering horizontally */
+    padding: 10px;
 }
 
 .flash-container {
     width: 100%; /* Use 100% width to span the container */
     text-align: center; /* Center the text */
+    color: #ffffff;
+    margin: 20px auto; /* Vertical spacing and centering horizontally */
 }
 
 .flash-message {
