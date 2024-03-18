@@ -2,24 +2,30 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import datetime
 import os
 import pytz
-import json
+import json  # Import the json module
 
 app = Flask(__name__)
 app.secret_key = '95311'  # Replace this with a strong secret key
 
-# Database of 10 students
-students = {
-    101: 'Alice Smith',
-    102: 'Bob Johnson',
-    103: 'Charlie Brown',
-    104: 'David Lee',
-    105: 'Eva Green',
-    106: 'Fiona Gallagher',
-    107: 'George White',
-    108: 'Hannah Young',
-    109: 'Ian Black',
-    110: 'Jane King'
-}
+# JSON file to store student data
+students_file = 'students.json'
+
+# Load student data from JSON file, or create an empty dictionary if the file doesn't exist
+def load_students():
+    if os.path.exists('students.json'):
+        with open('students.json', 'r') as file:
+            students = json.load(file)
+    else:
+        students = {}
+    return students
+
+# Save student data to JSON file
+def save_students(students):
+    with open(students_file, 'w') as file:
+        json.dump(students, file)
+
+# Initialize students dictionary
+students = load_students()
 
 # List to store bathroom visit logs
 bathroom_log = []
@@ -46,19 +52,25 @@ def show_menu(student_name):
 def go_to_bathroom(student_id):
     global bathroom_occupied, bathroom_occupied_since
 
+    # Load the student data
+    students = load_students()
+
     if bathroom_occupied is not None:
-        flash(f"Cannot go to the bathroom. It is currently occupied by {students[bathroom_occupied]}.")
+        flash(f"Cannot go to the bathroom. It is currently occupied by {students.get(str(bathroom_occupied), 'Unknown')}.")
         return
 
     bathroom_occupied = student_id
     bathroom_occupied_since = datetime.datetime.now(pytz.utc).astimezone(pst)
     # Log the bathroom visit
-    bathroom_log.append(f"{students[student_id]} went to the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S %Z')}")
-    flash(f"{students[student_id]} has left for the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S %Z')}.")
+    bathroom_log.append(f"{students.get(str(student_id), 'Unknown')} went to the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+    flash(f"{students.get(str(student_id), 'Unknown')} has left for the bathroom at {bathroom_occupied_since.strftime('%Y-%m-%d %H:%M:%S %Z')}.")
     return True
 
 def coming_back_to_class(student_id):
     global bathroom_occupied, bathroom_occupied_since
+
+    # Load the student data
+    students = load_students()
 
     if bathroom_occupied != student_id:
         flash("Error: You did not have an active bathroom pass.")
@@ -68,8 +80,8 @@ def coming_back_to_class(student_id):
     duration = coming_back_time - bathroom_occupied_since
     minutes, seconds = divmod(duration.seconds, 60)
     # Log the return from the bathroom
-    bathroom_log.append(f"{students[student_id]} came back from the bathroom at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}")
-    flash(f"{students[student_id]} came back to class at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}.")
+    bathroom_log.append(f"{students.get(str(student_id), 'Unknown')} came back from the bathroom at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+    flash(f"{students.get(str(student_id), 'Unknown')} came back to class at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}.")
     flash(f"Duration in the bathroom: {minutes} minutes and {seconds} seconds.")
     bathroom_occupied = None
     bathroom_occupied_since = None
@@ -138,24 +150,40 @@ def index():
         student_id_input = request.form.get('student_id')
         if student_id_input.lower() == 'admin':
             return redirect(url_for('view_log'))
+
+        students = load_students()  # Load the student data
+        
         try:
             student_id = int(student_id_input)
         except ValueError:
             flash("Invalid student ID. Please enter a numeric ID.")
             return redirect(url_for('index'))
-        if student_id in students:
+
+        # The JSON keys are stored as strings, so we need to convert the keys back to integers
+        student_ids = {int(k): v for k, v in students.items()}
+
+        # Check if the student_id exists in the loaded students data
+        if student_id in student_ids:
             session['student_id'] = student_id
             return redirect(url_for('menu'))
         else:
             flash("Invalid student ID.")
             return redirect(url_for('index'))
+
     return render_template('index.html')
+
 
 @app.route('/menu', methods=['GET', 'POST'])
 def menu():
     student_id = session.get('student_id')
     if student_id is None:
+        flash("Please log in with your student ID.")
         return redirect(url_for('index'))
+
+    students = load_students()  # Load the student data here
+
+    # Convert student_id to string because JSON keys are stored as strings
+    student_name = students.get(str(student_id), "Unknown")
 
     if request.method == 'POST':
         if 'go_to_bathroom' in request.form:
@@ -164,9 +192,10 @@ def menu():
             coming_back_to_class(student_id)  # Flash messages are set within this function
         elif 'logout' in request.form:
             session.pop('student_id', None)
+            flash("You have been logged out.")
             return redirect(url_for('index'))
     
-    return render_template('menu.html', student_name=students.get(student_id, "Unknown"))
+    return render_template('menu.html', student_name=student_name)
 
 @app.route('/view_log')
 def view_log():
@@ -175,22 +204,30 @@ def view_log():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        student_id = request.form.get('student_id')
+        student_id_input = request.form.get('student_id')
         student_name = request.form.get('student_name')
         try:
-            student_id = int(student_id)
+            student_id = int(student_id_input)
         except ValueError:
             flash("Invalid student ID. Please enter a numeric ID.")
             return redirect(url_for('signup'))
         
-        if student_id in students:
+        # Load the current students from the file
+        students = load_students()
+        
+        # Convert student_id to string because JSON keys are stored as strings
+        if str(student_id) in students:
             flash("A student with this ID already exists.")
+            return redirect(url_for('signup'))
         else:
-            students[student_id] = student_name
+            students[str(student_id)] = student_name  # Use string version of the ID
+            # Save the updated students dictionary to the file
+            save_students(students)
             flash("Signup successful!")
             return redirect(url_for('index'))
         
     return render_template('signup.html')
+
 
 if __name__ == '__main__':
     app.run(debug=False)
