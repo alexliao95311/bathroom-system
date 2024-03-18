@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Signup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Student Signup</h1>
+    <div class="flash-container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <form action="{{ url_for('signup') }}" method="post">
+        <input class="input-style" type="text" id="student_id" name="student_id" placeholder="Enter student ID" autocomplete="off" required>
+        <input class="input-style" type="text" id="student_name" name="student_name" placeholder="Enter student name" autocomplete="off" required>
+        <button type="submit">Sign Up</button>
+    </form>
+    <button style="width: auto" type="submit" onclick="window.location.href='/';">Back to Home</button>
+</body>
+</html>

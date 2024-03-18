@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 import datetime
 import os
 import pytz
+import json
 
 app = Flask(__name__)
 app.secret_key = '95311'  # Replace this with a strong secret key
@@ -68,7 +69,7 @@ def coming_back_to_class(student_id):
     minutes, seconds = divmod(duration.seconds, 60)
     # Log the return from the bathroom
     bathroom_log.append(f"{students[student_id]} came back from the bathroom at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}")
-    flash(f"{students[student_id]} is coming back to class at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}.")
+    flash(f"{students[student_id]} came back to class at {coming_back_time.strftime('%Y-%m-%d %H:%M:%S %Z')}.")
     flash(f"Duration in the bathroom: {minutes} minutes and {seconds} seconds.")
     bathroom_occupied = None
     bathroom_occupied_since = None
@@ -170,6 +171,26 @@ def menu():
 @app.route('/view_log')
 def view_log():
     return render_template('view_log.html', bathroom_log=bathroom_log)
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        student_id = request.form.get('student_id')
+        student_name = request.form.get('student_name')
+        try:
+            student_id = int(student_id)
+        except ValueError:
+            flash("Invalid student ID. Please enter a numeric ID.")
+            return redirect(url_for('signup'))
+        
+        if student_id in students:
+            flash("A student with this ID already exists.")
+        else:
+            students[student_id] = student_name
+            flash("Signup successful!")
+            return redirect(url_for('index'))
+        
+    return render_template('signup.html')
 
 if __name__ == '__main__':
     app.run(debug=False)

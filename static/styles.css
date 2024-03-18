@@ -35,13 +35,14 @@ form {
 }
 
 input[type="text"], button {
-    padding: 10px;
+    padding: 15px;
     margin-top: 10px;
     display: block; 
     margin-left: auto; 
     margin-right: auto;
     width: 80%; 
     border-radius: 10px;
+    
 }
 
 button {
@@ -175,16 +176,36 @@ ul.flashes li {
 .flash-container {
     width: 100%; /* Use 100% width to span the container */
     text-align: center; /* Center the text */
-    color: #ffffff;
+    color: #000000;
+    background-color: transparent;
     margin: 20px auto; /* Vertical spacing and centering horizontally */
+    width: 50%;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.flash-container-second {
+    width: 100%; /* Use 100% width to span the container */
+    text-align: center; /* Center the text */
+    color: #ffffff;
+    background-color: transparent;
+    margin: 20px auto; /* Vertical spacing and centering horizontally */
+    width: 50%;
+    border-radius: 10px;
+    padding: 10px;
+
+}
+
+.flash-container.active {
+    background-color: #ffcccc; /* Light red background */
 }
 
 .flash-message {
     display: inline-block; /* Allows for centering with text-align */
     margin: 10px auto; /* Vertical spacing and centering horizontally */
     padding: 10px;
-    border: 1px solid #ffaaaa; /* Red border for visibility */
-    background-color: #ffcccc; /* Light red background */
+    border: 1px solid #8c0e0e; /* Red border for visibility */
+    background-color: #d6fc00; /* Light red background */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: adds subtle shadow for depth */
     width: 80%; /* Adjust width as needed */
     box-sizing: border-box; /* Include padding and border in the element's width */
